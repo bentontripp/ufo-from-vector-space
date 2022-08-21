@@ -1,6 +1,7 @@
-import pandas as pd
-import json, re, certifi, urllib3
+# Import Libraries
+import re, certifi, urllib3
 from bs4 import BeautifulSoup
+import pandas as pd
 
 def getDateStrings(
     date_start:str,
@@ -27,7 +28,12 @@ def cleanTable(df:pd.DataFrame):
     """
     Clean dataframe of UFO sightings
     """
-    pass
+    # filter columns; rename 
+    df = df[['Date / Time', 'State', 'Country', 'Shape', 'Duration']]\
+        .rename(columns={'Date / Time':'Timestamp'})
+    # filter to USA (excluding minor outlying islands)
+    df = df.loc[df.Country == 'USA'].reset_index(drop=True).drop(columns='Country')
+    return df
 
 def getTable(
     date_start:str, 
@@ -42,25 +48,27 @@ def getTable(
             cert_reqs='CERT_REQUIRED',
             ca_certs=certifi.where()
         )
+    # parse dates, get data
     for date_str in dates:
         base_url = "https://nuforc.org/webreports/ndxe"
         r = http.request('GET', base_url + date_str + ".html")
         html = r.data
-        bs = BeautifulSoup(html, features="lxml")
-        tbls.append(pd.read_html(str(bs.find_all("table")))[0])
+        bs_tbl = BeautifulSoup(html, features="lxml").find_all("table")
+        assert len(bs_tbl) > 0, "No data available for date {}-{}".format(date_str[:-2], date_str[-2:])
+        tbls.append(pd.read_html(str(bs_tbl))[0])
     # concatenate dataframes
     df = pd.concat(tbls)
-    # filter columns; rename 
-    df = df[['Date / Time', 'State', 'Country', 'Shape', 'Duration']]\
-        .rename(columns={'Date / Time':'Timestamp'})
-    # filter to USA (excluding minor outlying islands)
-    df = df.loc[df.Country == 'USA'].reset_index(drop=True).drop(columns='Country')
+    df = cleanTable(df)
     return df
 
-if __name__ == '__main__':
-    start = '202107'
-    end = '202206'
+if __name__ == "__main__":
+    start = "202107"
+    end = "202206"
     df = getTable(start, end)
     print(df)
     print(df.Shape.unique())
-    print(len(df.Duration.unique()))
+    with open("src/data/durations.txt", "r", encoding="utf-8") as f:
+        for d in df.Duration.unique():
+            #f.write('\t"{}" : "",\n'.format(d))
+            print(d)
+        f.close()
