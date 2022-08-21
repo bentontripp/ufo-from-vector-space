@@ -13,8 +13,15 @@ def getDateStrings(
     start_month = int(date_start[-2:])
     end_year = int(date_end[:-2])
     end_month = int(date_end[-2:])
-    dates = [str(year) + str(month).zfill(2) for]
-    pass
+    if start_year < end_year:
+        dates = [str(start_year) + str(month).zfill(2) for month in range(start_month, 13)]
+        if end_year - start_year > 1:
+            for i in range(1, end_year - start_year):
+                dates += [str(i) + str(month).zfill(2) for month in range(1, 13)]
+        dates += [str(end_year) + str(month).zfill(2) for month in range(1, end_month + 1)]
+    else:
+        dates = [str(start_year) + str(month).zfill(2) for month in range(start_month, end_month + 1)]
+    return dates
 
 def combineTables(
     tbls -> list
