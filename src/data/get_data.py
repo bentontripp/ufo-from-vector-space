@@ -1,5 +1,5 @@
 # Import Libraries
-import re, certifi, urllib3
+import certifi, urllib3
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -24,16 +24,6 @@ def getDateStrings(
         dates = [str(start_year) + str(month).zfill(2) for month in range(start_month, end_month + 1)]
     return dates
 
-def cleanTable(df:pd.DataFrame):
-    """
-    Clean dataframe of UFO sightings
-    """
-    # filter columns; rename 
-    df = df[['Date / Time', 'State', 'Country', 'Shape', 'Duration']]\
-        .rename(columns={'Date / Time':'Timestamp'})
-    # filter to USA (excluding minor outlying islands)
-    df = df.loc[df.Country == 'USA'].reset_index(drop=True).drop(columns='Country')
-    return df
 
 def getTable(
     date_start:str, 
@@ -58,12 +48,11 @@ def getTable(
         tbls.append(pd.read_html(str(bs_tbl))[0])
     # concatenate dataframes
     df = pd.concat(tbls)
-    df = cleanTable(df)
+    # write to csv
+    df.to_csv('src/data/UFOs{}-{}.csv'.format(date_start, date_end), index=False)
     return df
 
 if __name__ == "__main__":
     start = "202107"
     end = "202206"
     df = getTable(start, end)
-    print(df)
-    print(df.Shape.unique())
