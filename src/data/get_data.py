@@ -67,8 +67,3 @@ if __name__ == "__main__":
     df = getTable(start, end)
     print(df)
     print(df.Shape.unique())
-    with open("src/data/durations.txt", "r", encoding="utf-8") as f:
-        for d in df.Duration.unique():
-            #f.write('\t"{}" : "",\n'.format(d))
-            print(d)
-        f.close()
