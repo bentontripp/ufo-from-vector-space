@@ -1,10 +1,10 @@
 import pandas as pd
-import requests, re
+import json, re, certifi, urllib3
 from bs4 import BeautifulSoup
 
 def getDateStrings(
-    date_start -> str,
-    date_end -> str
+    date_start:str,
+    date_end:str
     ):
     """
     Get date range between `date_start` and `date_end` (inclusive); dates formatted as `yyyymm`
@@ -23,32 +23,44 @@ def getDateStrings(
         dates = [str(start_year) + str(month).zfill(2) for month in range(start_month, end_month + 1)]
     return dates
 
-def combineTables(
-    tbls -> list
-    ):
+def cleanTable(df:pd.DataFrame):
     """
-    Clean/Combine list of UFO tables (each from a date page)
+    Clean dataframe of UFO sightings
     """
     pass
 
 def getTable(
-    date_start -> str, 
-    date_end -> str
+    date_start:str, 
+    date_end:str
     ):
     """
     Get UFO data in the USA between `date_start` and `date_end` (inclusive); dates formatted as 'yyyymm'
     """
     dates = getDateStrings(date_start, date_end)
     tbls = list()
+    http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',
+            ca_certs=certifi.where()
+        )
     for date_str in dates:
         base_url = "https://nuforc.org/webreports/ndxe"
-        html = requests.get(base_url + date_str, verify=False).text
-        bs = BeautifulSoup(html)
-        tbls += bs.findAll("table")
-    tbl = combineTables(tbls)
-    return tbl
+        r = http.request('GET', base_url + date_str + ".html")
+        html = r.data
+        bs = BeautifulSoup(html, features="lxml")
+        tbls.append(pd.read_html(str(bs.find_all("table")))[0])
+    # concatenate dataframes
+    df = pd.concat(tbls)
+    # filter columns; rename 
+    df = df[['Date / Time', 'State', 'Country', 'Shape', 'Duration']]\
+        .rename(columns={'Date / Time':'Timestamp'})
+    # filter to USA (excluding minor outlying islands)
+    df = df.loc[df.Country == 'USA'].reset_index(drop=True).drop(columns='Country')
+    return df
 
 if __name__ == '__main__':
     start = '202107'
     end = '202206'
-    data = getTable(start, end)
+    df = getTable(start, end)
+    print(df)
+    print(df.Shape.unique())
+    print(len(df.Duration.unique()))
