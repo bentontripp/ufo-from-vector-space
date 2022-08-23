@@ -172,3 +172,5 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+.gitsecret/keys/random_seed
+!*.secret
