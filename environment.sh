@@ -61,6 +61,7 @@ else
             pip install Shapely==1.8.4
             pip install geocoder==1.38.1
             pip install ipykernel==6.15.1
+            echo -e "/nReady."
         else
             deactivate
             echo -e "Python version below required 3.9. Exiting..."
