@@ -49,7 +49,7 @@ def getTable(
     # concatenate dataframes
     df = pd.concat(tbls)
     # write to csv
-    df.to_csv('src/data/UFOs{}-{}.csv'.format(date_start, date_end), index=False)
+    df.to_csv('src/data/raw/UFOs{}-{}.csv'.format(date_start, date_end), index=False)
     return df
 
 if __name__ == "__main__":

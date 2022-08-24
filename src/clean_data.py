@@ -63,7 +63,7 @@ def cleanTable(file):
     df = df.loc[df.Country == 'USA'].reset_index(
         drop=True).drop(columns='Country')
     # read json duration data
-    with open('src/data/durations.json') as f:
+    with open('src/data/processed/durations.json') as f:
         durations = json.loads(f.read())
         f.close()
     # map to `Updated_Duration`; impute null with median
@@ -71,19 +71,19 @@ def cleanTable(file):
     df.loc[~df.Updated_Duration.isna(), 'Updated_Duration'] = df.loc[~df.Updated_Duration.isna()].Updated_Duration.apply(toMinutes)
     df.loc[df.Updated_Duration.isna(), 'Updated_Duration'] = np.median(df.Updated_Duration.values)
     # get lat lon
-    if os.path.exists('src/data/locations.csv'):
-        locations = pd.read_csv('src/data/locations.csv')
+    if os.path.exists('src/data/processed/locations.csv'):
+        locations = pd.read_csv('src/data/processed/locations.csv')
         df['Coords'] = locations.Coords.apply(evalCoord)
         pass
     else:
         df['Coords'] = (df.City + ', ' + df.State).apply(getLatLon)
-        df[['City', 'State', 'Coords']].to_csv('src/data/locations.csv', index=False)
+        df[['City', 'State', 'Coords']].to_csv('src/data/processed/locations.csv', index=False)
     # Lat/Lng columns
     df['Lat'] = df.Coords.apply(lambda c: c[0])
     df['Lng'] = df.Coords.apply(lambda c: c[1])
     # Filter to main body of US
     # https://stackoverflow.com/questions/36399381/whats-the-fastest-way-of-checking-if-a-point-is-inside-a-polygon-in-python
-    geom = shape(fiona.open('src/data/dissolved_us_body.shp')[0]['geometry'])
+    geom = shape(fiona.open('src/data/maps/dissolved_us/dissolved_us_body.shp')[0]['geometry'])
     bounds = np.array([
         [geom.bounds[0], geom.bounds[3]], 
         [geom.bounds[0], geom.bounds[1]], 
