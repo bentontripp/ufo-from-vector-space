@@ -25,10 +25,7 @@ def getDateStrings(
     return dates
 
 
-def getTable(
-    date_start:str, 
-    date_end:str
-    ):
+def getTable():
     """
     Get UFO data in the USA between `date_start` and `date_end` (inclusive); dates formatted as 'yyyymm'
     """
@@ -49,10 +46,8 @@ def getTable(
     # concatenate dataframes
     df = pd.concat(tbls)
     # write to csv
-    df.to_csv('src/data/raw/UFOs{}-{}.csv'.format(date_start, date_end), index=False)
+    df.to_csv('src/data/raw/raw_ufo_data.csv', index=False)
     return df
 
 if __name__ == "__main__":
-    start = "202107"
-    end = "202206"
-    df = getTable(start, end)
+    df = getTable()

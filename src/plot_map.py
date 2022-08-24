@@ -3,7 +3,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 
 # https://datascientyst.com/plot-latitude-longitude-pandas-dataframe-python/
-def get_map(df):
+def getMap(df):
     geometry = [Point(c) for c in df.Coords]
     gdf = gpd.GeoDataFrame(df, geometry=geometry)
     # Load US_body from disc
