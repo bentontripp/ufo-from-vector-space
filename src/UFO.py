@@ -10,8 +10,3 @@ class US_UFO_data:
         self.data = cleanTable(file)
         self.features = getFeatures(self.data)
         self.map = get_map(self.data)
-
-if __name__ == '__main__':
-    ufo = US_UFO_data()
-    ufo.data.to_csv('src/data/us_ufo_data.csv', index=False)
-    ufo.features.to_csv('src/data/us_ufo_data_features.csv', index=False)
