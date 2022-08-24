@@ -1,5 +1,5 @@
 # ufo-from-vector-space
-Multiple Correspondence Analysis (MCA) of UFO sightings in the USA.
+Data and analysis of UFO sightings in the USA.
 
 
 ## Tools used in this project
