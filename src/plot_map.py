@@ -9,4 +9,6 @@ def get_map(df):
     # Load US_body from disc
     states = gpd.read_file('src/data/state.shp')
     gdf.plot(ax=states.plot(figsize=(15,15)), marker='o', color='red', markersize=15)
+    plt.gca().set_position([0,0,1,1])
+    plt.savefig("docs/img/map.svg")
     return plt

@@ -13,3 +13,5 @@ class US_UFO_data:
 
 if __name__ == '__main__':
     ufo = US_UFO_data()
+    print(ufo.data.head())
+    print(ufo.features.head())
