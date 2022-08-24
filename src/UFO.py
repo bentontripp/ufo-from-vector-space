@@ -13,5 +13,5 @@ class US_UFO_data:
 
 if __name__ == '__main__':
     ufo = US_UFO_data()
-    print(ufo.data.head())
-    print(ufo.features.head())
+    ufo.data.to_csv('src/data/us_ufo_data.csv', index=False)
+    ufo.features.to_csv('src/data/us_ufo_data_features.csv', index=False)
