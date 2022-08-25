@@ -50,7 +50,7 @@ else
             pip install beautifulsoup4==4.11.1
             pip install urllib3==1.26.11
             pip install requests==2.28.1
-            pip install PyYAML==6.0
+            pip install configparser==5.3.0
             pip install lxml==4.9.1
             pip install pipwin==0.5.2
             pipwin install gdal==3.4.3

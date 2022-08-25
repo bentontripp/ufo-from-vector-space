@@ -3,6 +3,7 @@ import certifi, urllib3
 from bs4 import BeautifulSoup
 import pandas as pd
 
+
 def getDateStrings(
     date_start:str,
     date_end:str
@@ -25,7 +26,7 @@ def getDateStrings(
     return dates
 
 
-def getTable():
+def getTable(raw_path):
     """
     Get UFO data in the USA between `date_start` and `date_end` (inclusive); dates formatted as 'yyyymm'
     """
@@ -46,8 +47,5 @@ def getTable():
     # concatenate dataframes
     df = pd.concat(tbls)
     # write to csv
-    df.to_csv('src/data/raw/raw_ufo_data.csv', index=False)
+    df.to_csv(raw_path, index=False)
     return df
-
-if __name__ == "__main__":
-    df = getTable()
