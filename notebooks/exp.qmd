@@ -19,7 +19,35 @@ library("ggplot2")
 DT <- fread('../data/processed/us_ufo_data.csv')[, .(Timestamp, Shape, Images, Updated_Duration, Lat, Lng)]
 DT[, `:=` (month=lubridate::month(Timestamp), hour=lubridate::hour(Timestamp), Timestamp=NULL)]
 
+ggplot(data=DT, aes(factor(Shape), fill=Shape)) +
+  geom_bar()  +
+  coord_flip()
+```
 
+```{r}
+# some manual grouping
+DT[Shape %in% c('Circle', 'Egg', 'Disk', 'Oval', 'Sphere'), Shape := 'Circular']
+DT[Shape %in% c('Cigar', 'Cylinder'), Shape := 'Cylindrical']
+
+ggplot(data=DT, aes(factor(Shape), fill=Shape)) +
+  geom_bar()  +
+  coord_flip()
+```
+
+```{r}
+print(summary(DT[, .(freq=.N), by=Shape]))
+```
+
+```{r}
+print(setorder(DT[, .(freq=.N), by=Shape], 'freq')[])
+```
+
+```{r}
+DT[Shape %in% setorder(DT[, .(freq=.N), by=Shape], 'freq')$Shape[1:6], Shape := 'Other']
+
+ggplot(data=DT, aes(factor(Shape), fill=Shape)) +
+  geom_bar()  +
+  coord_flip()
 ```
 
 ```{r}
@@ -27,7 +55,6 @@ res.famd <- FAMD(DT, graph = F)
 eig.val <- get_eigenvalue(res.famd)
 # plot
 fviz_eig(res.famd)
-
 ```
 
 ```{r}

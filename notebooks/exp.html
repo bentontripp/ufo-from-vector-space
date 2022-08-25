@@ -160,84 +160,148 @@ Attaching package: 'data.table'</code></pre>
 
     between, first, last</code></pre>
 </div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="exp_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Shape frequencies</figcaption><p></p>
+</figure>
+</div>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>res.famd <span class="ot">&lt;-</span> <span class="fu">FAMD</span>(DT, <span class="at">graph =</span> F)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>eig.val <span class="ot">&lt;-</span> <span class="fu">get_eigenvalue</span>(res.famd)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(res.famd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># some manual grouping</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>DT[Shape <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'Circle'</span>, <span class="st">'Egg'</span>, <span class="st">'Disk'</span>, <span class="st">'Oval'</span>, <span class="st">'Sphere'</span>), Shape <span class="sc">:</span><span class="er">=</span> <span class="st">'Circular'</span>]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>DT[Shape <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'Cigar'</span>, <span class="st">'Cylinder'</span>), Shape <span class="sc">:</span><span class="er">=</span> <span class="st">'Cylindrical'</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>DT, <span class="fu">aes</span>(<span class="fu">factor</span>(Shape), <span class="at">fill=</span>Shape)) <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()  <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exp_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="fu">get_famd_var</span>(res.famd)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Coordinates of variables</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var<span class="sc">$</span>coord))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(DT[, .(<span class="at">freq=</span>.N), <span class="at">by=</span>Shape]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                       Dim.1        Dim.2       Dim.3        Dim.4       Dim.5
-Images           0.466604033 0.0272348627 0.003379757 0.0006704182 0.037200093
-Updated_Duration 0.033982375 0.0194261909 0.033064200 0.3203406277 0.104357640
-Lat              0.020133855 0.0215534995 0.412390085 0.0073504160 0.066636970
-Lng              0.008858782 0.1328400239 0.257144753 0.1034806088 0.041811149
-month            0.491605151 0.0009332282 0.001513371 0.0108839633 0.005557622
-hour             0.075288608 0.3755832920 0.123630897 0.0005136693 0.010869958</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cos2: quality of representation on the factore map</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var<span class="sc">$</span>cos2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                        Dim.1        Dim.2        Dim.3        Dim.4
-Images           2.177193e-01 7.417377e-04 1.142276e-05 4.494605e-07
-Updated_Duration 1.154802e-03 3.773769e-04 1.093241e-03 1.026181e-01
-Lat              4.053721e-04 4.645533e-04 1.700656e-01 5.402862e-05
-Lng              7.847802e-05 1.764647e-02 6.612342e-02 1.070824e-02
-month            2.416756e-01 8.709148e-07 2.290293e-06 1.184607e-04
-hour             5.668375e-03 1.410628e-01 1.528460e-02 2.638561e-07
-                        Dim.5
-Images           1.383847e-03
-Updated_Duration 1.089052e-02
-Lat              4.440486e-03
-Lng              1.748172e-03
-month            3.088717e-05
-hour             1.181560e-04</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contributions to the  dimensions</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var<span class="sc">$</span>contrib))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                     Dim.1       Dim.2      Dim.3       Dim.4      Dim.5
-Images           34.334508  2.28745712  0.3006441  0.06269520  3.6037506
-Updated_Duration  2.500553  1.63160649  2.9412052 29.95715535 10.1096229
-Lat               1.481526  1.81027922 36.6839010  0.68738566  6.4554415
-Lng               0.651863 11.15723850 22.8741500  9.67715115  4.0504456
-month            36.174186  0.07838187  0.1346210  1.01783087  0.5383934
-hour              5.540024 31.54525455 10.9975088  0.04803659  1.0530247</code></pre>
+<pre><code>    Shape                freq        
+ Length:16          Min.   :   9.00  
+ Class :character   1st Qu.:  17.75  
+ Mode  :character   Median :  56.50  
+                    Mean   : 193.94  
+                    3rd Qu.: 201.00  
+                    Max.   :1060.00  </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of variables</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">setorder</span>(DT[, .(<span class="at">freq=</span>.N), <span class="at">by=</span>Shape], <span class="st">'freq'</span>)[])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Shape freq
+ 1:        Cone    9
+ 2:       Cross   12
+ 3:       Flash   14
+ 4:       Delta   14
+ 5:    Teardrop   19
+ 6:        Star   30
+ 7:     Chevron   33
+ 8:     Diamond   37
+ 9:   Rectangle   76
+10:    Fireball   81
+11:   Formation   95
+12: Cylindrical  197
+13:    Triangle  213
+14:       Light  440
+15:    Circular  773
+16:       Other 1060</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contribution to the first dimension</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_contrib</span>(res.famd, <span class="st">"var"</span>, <span class="at">axes =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>DT[Shape <span class="sc">%in%</span> <span class="fu">setorder</span>(DT[, .(<span class="at">freq=</span>.N), <span class="at">by=</span>Shape], <span class="st">'freq'</span>)<span class="sc">$</span>Shape[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], Shape <span class="sc">:</span><span class="er">=</span> <span class="st">'Other'</span>]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>DT, <span class="fu">aes</span>(<span class="fu">factor</span>(Shape), <span class="at">fill=</span>Shape)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()  <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exp_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contribution to the second dimension</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_contrib</span>(res.famd, <span class="st">"var"</span>, <span class="at">axes =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>res.famd <span class="ot">&lt;-</span> <span class="fu">FAMD</span>(DT, <span class="at">graph =</span> F)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>eig.val <span class="ot">&lt;-</span> <span class="fu">get_eigenvalue</span>(res.famd)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_eig</span>(res.famd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="exp_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the results for quantitative variables</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>quanti.var <span class="ot">&lt;-</span> <span class="fu">get_famd_var</span>(res.famd, <span class="st">"quanti.var"</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quanti.var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="fu">get_famd_var</span>(res.famd)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Coordinates of variables</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var<span class="sc">$</span>coord))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       Dim.1       Dim.2        Dim.3       Dim.4       Dim.5
+Images           0.481038875 0.042689146 0.0002418887 0.001406802 0.033538006
+Updated_Duration 0.047199755 0.028318602 0.0526445726 0.195513509 0.096426139
+Lat              0.030129086 0.017964834 0.4156688038 0.005012733 0.029641535
+Lng              0.003989455 0.122317781 0.2932527147 0.170024646 0.010040583
+month            0.493281602 0.001664271 0.0006173218 0.025378140 0.004358104
+hour             0.088363159 0.355835261 0.1372538742 0.005342196 0.003282313</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cos2: quality of representation on the factore map</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var<span class="sc">$</span>cos2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        Dim.1        Dim.2        Dim.3        Dim.4
+Images           2.313984e-01 1.822363e-03 5.851014e-08 1.979091e-06
+Updated_Duration 2.227817e-03 8.019432e-04 2.771451e-03 3.822553e-02
+Lat              9.077618e-04 3.227353e-04 1.727806e-01 2.512749e-05
+Lng              1.591575e-05 1.496164e-02 8.599715e-02 2.890838e-02
+month            2.433267e-01 2.769799e-06 3.810862e-07 6.440500e-04
+hour             7.808048e-03 1.266187e-01 1.883863e-02 2.853906e-05
+                        Dim.5
+Images           1.124798e-03
+Updated_Duration 9.298000e-03
+Lat              8.786206e-04
+Lng              1.008133e-04
+month            1.899307e-05
+hour             1.077358e-05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contributions to the  dimensions</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var<span class="sc">$</span>contrib))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     Dim.1      Dim.2       Dim.3      Dim.4     Dim.5
+Images           36.353898  3.6301566  0.02181459  0.1361156 3.2987770
+Updated_Duration  3.567061  2.4081288  4.74771947 18.9169808 9.4844139
+Lat               2.276967  1.5276754 37.48684389  0.4850088 2.9155225
+Lng               0.301498 10.4015362 26.44682169 16.4507966 0.9875854
+month            37.279126  0.1415246  0.05567280  2.4554711 0.4286603
+hour              6.677933 30.2591603 12.37815902  0.5168861 0.3228462</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of variables</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exp_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contribution to the first dimension</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_contrib</span>(res.famd, <span class="st">"var"</span>, <span class="at">axes =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exp_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Contribution to the second dimension</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_contrib</span>(res.famd, <span class="st">"var"</span>, <span class="at">axes =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="exp_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the results for quantitative variables</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>quanti.var <span class="ot">&lt;-</span> <span class="fu">get_famd_var</span>(res.famd, <span class="st">"quanti.var"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quanti.var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FAMD results for quantitative variables 
  ===================================================
@@ -248,29 +312,29 @@ hour              5.540024 31.54525455 10.9975088  0.04803659  1.0530247</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="st">"quanti.var"</span>, <span class="at">col.var =</span> <span class="st">"contrib"</span>, </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>),</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">repel =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="st">"quanti.var"</span>, <span class="at">col.var =</span> <span class="st">"contrib"</span>, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">repel =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="exp_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Color by cos2 values: quality on the factor map</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="st">"quanti.var"</span>, <span class="at">col.var =</span> <span class="st">"cos2"</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>), </span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Color by cos2 values: quality on the factor map</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="st">"quanti.var"</span>, <span class="at">col.var =</span> <span class="st">"cos2"</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>), </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="exp_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>quali.var <span class="ot">&lt;-</span> <span class="fu">get_famd_var</span>(res.famd, <span class="st">"quali.var"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quali.var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>quali.var <span class="ot">&lt;-</span> <span class="fu">get_famd_var</span>(res.famd, <span class="st">"quali.var"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quali.var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FAMD results for qualitative variable categories 
  ===================================================
@@ -281,19 +345,19 @@ hour              5.540024 31.54525455 10.9975088  0.04803659  1.0530247</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="st">"quali.var"</span>, <span class="at">col.var =</span> <span class="st">"contrib"</span>, </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_var</span>(res.famd, <span class="st">"quali.var"</span>, <span class="at">col.var =</span> <span class="st">"contrib"</span>, </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="exp_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">get_famd_ind</span>(res.famd)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ind)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ind <span class="ot">&lt;-</span> <span class="fu">get_famd_ind</span>(res.famd)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ind)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>FAMD results for individuals 
  ===================================================
@@ -304,31 +368,31 @@ hour              5.540024 31.54525455 10.9975088  0.04803659  1.0530247</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_ind</span>(res.famd, <span class="at">col.ind =</span> <span class="st">"cos2"</span>, </span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>),</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_famd_ind</span>(res.famd, <span class="at">col.ind =</span> <span class="st">"cos2"</span>, </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">gradient.cols =</span> <span class="fu">c</span>(<span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span>),</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: ggrepel: 3075 unlabeled data points (too many overlaps). Consider
+<pre><code>Warning: ggrepel: 3084 unlabeled data points (too many overlaps). Consider
 increasing max.overlaps</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="exp_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ellipses</span>(res.famd, <span class="dv">1</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ellipses</span>(res.famd, <span class="dv">1</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: ggrepel: 3083 unlabeled data points (too many overlaps). Consider
+<pre><code>Warning: ggrepel: 3086 unlabeled data points (too many overlaps). Consider
 increasing max.overlaps</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="exp_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ellipses</span>(res.famd, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">geom =</span> <span class="st">"point"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_ellipses</span>(res.famd, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">geom =</span> <span class="st">"point"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `gather_()` was deprecated in tidyr 1.2.0.
 Please use `gather()` instead.
@@ -336,7 +400,7 @@ This warning is displayed once every 8 hours.
 Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="exp_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<p><img src="exp_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
