@@ -1,28 +1,33 @@
 # ufo-from-vector-space
 Data and analysis of UFO sightings in the USA.
 
+![Map](docs/map.svg)
+
 ## Project structure
 ```bash
 .
 ├── config                      
-│   └── main.yaml                   # Main configuration file
+│   └── configurations.ini
 ├── data            
-│   ├── final                       
+│   ├── final      
+│   ├── maps
+│   │   ├── dissolved_us
+|   |   └── inland_states    
 │   ├── processed                   
 │   └── raw
-├── docs                            # documentation for your project
-├── environment.sh                  # shell script to activate environment
-├── .gitignore                      # ignore files that cannot commit to Git
-├── models                          # store models
-├── notebooks                       # store notebooks
-├── README.md                       # describe your project
-├── src                             # store source code
-│   ├── __init__.py                 # make src a Python module 
+├── docs 
+├── environment.sh
+├── .gitignore
+├── notebooks
+├── README.md
+├── src
+│   ├── __init__.py 
 │   ├── clean_data.py
+|   ├── config.py
 │   ├── get_data.py
 │   ├── plot_map.py
 │   └── UFO.py
-└── tests                           # store tests
-    └── __init__.py                 # make tests a Python module 
+└── tests
+    └── __init__.py 
 ```
 
