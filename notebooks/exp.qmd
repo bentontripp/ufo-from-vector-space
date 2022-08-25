@@ -1,0 +1,121 @@
+---
+title: "Factor Analysis of Mixed Data - UFOs"
+author: "Benton Tripp"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false
+#| fig-cap: "Shape frequencies"
+
+library("FactoMineR")
+library("factoextra")
+library("dplyr")
+library("data.table")
+library("ggplot2")
+
+
+DT <- fread('../data/processed/us_ufo_data.csv')[, .(Timestamp, Shape, Images, Updated_Duration, Lat, Lng)]
+DT[, `:=` (month=lubridate::month(Timestamp), hour=lubridate::hour(Timestamp), Timestamp=NULL)]
+
+
+```
+
+```{r}
+res.famd <- FAMD(DT, graph = F)
+eig.val <- get_eigenvalue(res.famd)
+# plot
+fviz_eig(res.famd)
+
+```
+
+```{r}
+var <- get_famd_var(res.famd)
+# Coordinates of variables
+print(head(var$coord))
+# Cos2: quality of representation on the factore map
+print(head(var$cos2))
+# Contributions to the  dimensions
+print(head(var$contrib))
+```
+
+```{r}
+
+# Plot of variables
+fviz_famd_var(res.famd, repel = TRUE)
+
+```
+
+```{r}
+# Contribution to the first dimension
+fviz_contrib(res.famd, "var", axes = 1)
+
+```
+
+```{r}
+# Contribution to the second dimension
+fviz_contrib(res.famd, "var", axes = 2)
+
+```
+
+```{r}
+
+# extract the results for quantitative variables
+quanti.var <- get_famd_var(res.famd, "quanti.var")
+print(quanti.var)
+
+```
+
+```{r}
+fviz_famd_var(res.famd, "quanti.var", col.var = "contrib", 
+              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+              repel = T)
+
+```
+
+```{r}
+# Color by cos2 values: quality on the factor map
+
+fviz_famd_var(res.famd, "quanti.var", col.var = "cos2",
+
+              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+
+              repel = TRUE)
+```
+
+```{r}
+quali.var <- get_famd_var(res.famd, "quali.var")
+
+print(quali.var)
+```
+
+```{r}
+fviz_famd_var(res.famd, "quali.var", col.var = "contrib", 
+
+              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07")
+
+)
+```
+
+```{r}
+ind <- get_famd_ind(res.famd)
+
+print(ind)
+```
+
+```{r}
+fviz_famd_ind(res.famd, col.ind = "cos2", 
+
+              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+
+              repel = TRUE)
+```
+
+```{r}
+fviz_ellipses(res.famd, 1, repel = TRUE)
+```
+
+```{r}
+fviz_ellipses(res.famd, 1:2, geom = "point")
+```
