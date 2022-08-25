@@ -17,8 +17,9 @@ def genConfig():
     config.set("DataPaths", "Durations", "data/processed/durations.json")
     config.set("DataPaths", "Locations", "data/processed/locations.csv")
     config.set("DataPaths", "DissolvedUS", "data/maps/dissolved_us/dissolved_us_body.shp")
-    config.set("DataPaths", "InlandStates", "data/maps/inland_states/inland_states.shp")
+    # config.set("DataPaths", "InlandStates", "data/maps/inland_states/inland_states.shp")
     config.set("PlotPath", "MapSVG", "docs/map.svg")
+    config.set("PlotPath", "MapJPG", "docs/map.jpeg")
 
 
     # SAVE CONFIG FILE

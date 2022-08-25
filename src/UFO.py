@@ -43,8 +43,9 @@ class US_UFO_data:
             self.features.to_csv(final_path)
         self.map = getMap(
             self.data, 
-            inlandstates_path=CONFIG.Data['inlandstates'], 
-            mapsvg_path=CONFIG.Plots['mapsvg']
+            dissolvedus_path=CONFIG.Data['dissolvedus'], 
+            mapsvg_path=CONFIG.Plots['mapsvg'],
+            mapjpg_path=CONFIG.Plots['mapjpg']
             )
 
 if __name__ == '__main__':
