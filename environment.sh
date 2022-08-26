@@ -3,10 +3,8 @@
 VENV="$1"
 
 function check_version {
-    version=python --version 2>&1 | grep -Po 'Python \K.*'
-    version=$(echo $version | grep -o '[^-]*$')
-    major=$(echo $version | cut -d. -f1)
-    minor=$(echo $version | cut -d. -f2)
+    major=`python --version 2>&1 | grep -Po 'Python \K.*' | awk -F. '{print $1}'`
+    minor=`python --version 2>&1 | grep -Po 'Python \K.*' | awk -F. '{print $2}'`
     if ([ "$major" -ge 3 ] && [ "$minor" -ge 9 ])
     then
         true
