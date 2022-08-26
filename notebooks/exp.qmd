@@ -16,7 +16,7 @@ library("ggplot2")
 ```{r}
 #| fig-cap: "Shape frequencies"
 DT <- fread('./data/processed/us_ufo_data.csv')[, .(Timestamp, Shape, Images, Updated_Duration, Lat, Lng)]
-DT[, `:=` (month=factor(lubridate::month(Timestamp, label=T)), hour=factor(lubridate::hour(Timestamp)), Timestamp=NULL, Images=NULL)]
+DT[, `:=` (month=factor(lubridate::month(Timestamp, label=T)), Timestamp=NULL, Images=NULL)]
 
 ggplot(data=DT, aes(factor(Shape), fill=Shape)) +
   geom_bar()  +
