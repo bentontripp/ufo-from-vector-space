@@ -43,6 +43,8 @@ else
         if check_version
         then
             echo "Installing Dependencies..."
+            # python.exe -m pip install --upgrade pip
+            pip install wheel
             pip install numpy==1.23.2
             pip install pandas==1.4.3
             pip install beautifulsoup4==4.11.1
@@ -54,9 +56,8 @@ else
             pipwin install gdal==3.4.3
             pipwin install fiona==1.8.21
             pip install geopandas==0.11.1
-            pipwin install inpoly==0.1.2
+            pip install inpoly==0.1.2
             pip install matplotlib==3.5.3
-            pip install Shapely==1.8.4
             pip install geocoder==1.38.1
             pip install ipykernel==6.15.1
             echo -e "/nReady."
